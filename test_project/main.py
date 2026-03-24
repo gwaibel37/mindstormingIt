@@ -1,37 +1,31 @@
-#!/usr/bin/env pybricks-micropython
-from pybricks.hubs import EV3Brick
-from pybricks.ev3devices import Motor
-from pybricks.parameters import Port, Stop
-from pybricks.tools import wait
-import random
+import hub
+import time
 
-# Initialize the hub and motor
-ev3 = EV3Brick()
-motor_a = Motor(Port.A)
+# Frequency Constants for the "Runaway" Intro
+E6 = 1319  # The iconic high "ping"
+E5 = 659
+D5 = 587
+C5 = 523
+B4 = 494
+A4 = 440
 
-ev3.speaker.set_volume(100)
-print("Initiating Chaos Mode...")
+# Timing (in milliseconds)
+BEAT = 600    # The pace of the intro
+GAP = 0.05    # Tiny gap for articulation
 
-# Run this loop 20 times (or change to 'while True:' for infinite madness)
-for _ in range(20):
-    # 1. Pick a "really fast" speed between -1000 and 1000
-    # Negative values automatically handle the "randomly backwards" part
-    crazy_speed = random.randint(-1000, 1000)
-    
-    # 2. Pick a random duration for this burst (200ms to 1.5 seconds)
-    duration = random.randint(200, 1500)
-    
-    # 3. Play a stupid random beep
-    # Random frequency between 100Hz (low growl) and 2000Hz (high squeak)
-    ev3.speaker.beep(frequency=random.randint(100, 2000), duration=100)
-    
-    print("Zipping at:", crazy_speed)
-    motor_a.run(crazy_speed)
-    
-    # Wait for the duration of the burst
-    wait(duration)
+def play(note, duration):
+    if note > 0:
+        hub.speaker.beep(note, duration)
+    time.sleep(duration / 1000 + GAP)
 
-# Stop the madness
-motor_a.stop()
-ev3.speaker.say("System meltdown averted")
-print("Done!")
+# --- The "Runaway" Sequence ---
+# 1. The 15 High E notes (The "Ping")
+for _ in range(15):
+    play(E6, 400)
+
+# 2. The Descent (The melodic shift)
+play(E5, 400)
+play(D5, 400)
+play(C5, 400)
+play(B4, 400)
+play(A4, 800) # Hold the last note a bit longer
